@@ -30,7 +30,7 @@ export default class CreateSale extends LightningElement {
  Totalprice;
  Discountprice;
   @track rows = [
-    {SrNo:1, item: '', description: '',  quantity: '', UoM: '',  rate: '', Discount: '',DiscountPrice: '', Total: ''   }
+    {index: 0, SrNo:1, item: '', description: '',  quantity: '', UoM: '',  rate: '', Discount: '',DiscountPrice: '', Total: ''   }
 ];
   selectedState = '';
   selectedDistrict = '';
@@ -82,34 +82,29 @@ export default class CreateSale extends LightningElement {
       //val.value=discPrice;
       //let val1 = this.template.querySelector('.ValJ');
       //val1.value=Totlprice;
-      this.rows[index].Totalprice.value = this.Quantity * this.Unitrate - this.Discountprice;
+       let table = this.template.querySelector('table');
+         let rowNumber = table.rows.length-1;
+      this.rows[rowNumber].Totalprice.value = this.Quantity * this.Unitrate - this.Discountprice;
 
     }
   }
 
- 
-quantityhandler(event)
-{
-    this.Quantity=event.target.value
-    if (this.Unitrate!="undefined")
- {
-this.Totalprice=this.Quantity*this.Unitrate-this.Discountprice;
-    let discPrice=this.Discount*this.Unitrate*this.Quantity/100;
-    let Totlprice=this.Unitrate*this.Quantity-this.Discountprice;
-    let val = this.template.querySelector('.ValJS');
-    //val.value=discPrice;
-    let val1 = this.template.querySelector('.ValJ');
-    //val1.value=Totlprice;
-    //this.rows[index].Totalprice.value = this.Quantity * this.Unitrate - this.Discountprice;
-    const rowIndex = event.currentTarget.dataset.index;
-    const selectedRow = this.template.querySelector(`tbody tr:nth-child(${parseInt(rowIndex, 10) + 1})`);
-    selectedRow.Total.value=Totlprice;
-    selectedRow.DiscountPrice.value=Totlprice;
-    console.log(selectedRow); // You can now use the selected row
-
-
- }
+  quantityhandler(event) {
+    this.Quantity = event.target.value;
+    if (typeof this.Unitrate !== "undefined" ) {
+        let discPrice = this.Discount * this.Unitrate * this.Quantity / 100;
+        let Totlprice = this.Unitrate * this.Quantity; //- this.Discountprice;
+        this.Totalprice = Totlprice;
+        let table = this.template.querySelector('table');
+        let rowNumber = table.rows.length - 1;
+        console.log(rowNumber);
+        this.rows[rowNumber].Total = Totlprice;
+        console.log(this.rows[rowNumber].Total);
+    }
 }
+
+
+
 discounthandler(event)
 {
     
@@ -120,12 +115,10 @@ discounthandler(event)
        this.Totalprice=this.Unitrate*this.Quantity-this.Discountprice;
        let discPrice=this.Discount*this.Unitrate*this.Quantity/100;
       let Totlprice=this.Unitrate*this.Quantity-this.Discountprice;
-      let val = this.template.querySelector('.ValJS');
-      //val.value=discPrice;
-      let val1 = this.template.querySelector('.ValJ');
-      //val1.value=Totlprice;
-      this.rows[index].Totalprice = this.Quantity * this.Unitrate - this.Discountprice;
-      
+      let table = this.template.querySelector('table');
+         let rowNumber = table.rows.length-1;
+      this.rows[rowNumber].Totalprice.value = this.Quantity * this.Unitrate - this.Discountprice;
+
 
     }
 }
