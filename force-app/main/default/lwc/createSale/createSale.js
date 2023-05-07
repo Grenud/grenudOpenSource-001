@@ -14,6 +14,7 @@ const FIELDS = ['Sale_Invoice__c.Party__r.Name', 'Product_Item__c.Product2.Name'
 
 
 export default class CreateSale extends LightningElement {
+  //Test Comment 12
   FortuneLogoUrl = Logo;
   addIcon=ADDICON;
   DeleteIcon=DELETEICON;
