@@ -1,0 +1,11 @@
+<template>
+lightning <lightning-card  variant="Narrow"  title="Calculator" icon-name="standard:account">
+
+
+ <lightning-input type="decimal" variant="standard"  label = "Rate" name="Rate" onblur= {ratehandler}></lightning-input>
+<lightning-input type="decimal" variant="standard"  label = "Quantity" name="Quantity" onblur={quantityhandler}></lightning-input>
+<lightning-input type="decimal" variant="standard"  label = "Discount %" name="Discount %" onblur={discounthandler} ></lightning-input>
+  <lightning-input type="decimal" variant="standard" label = "Discount Price" name="Discount Price" value={Discountprice} ></lightning-input>
+ <lightning-input type="decimal" variant="standard"  label = "Total Price" name="Total Price" value={Totalprice} ></lightning-input>
+</lightning-card>
+</template>
