@@ -6,6 +6,7 @@ import SALE_INVOICE_OBJECT from '@salesforce/schema/Sale_Invoice__c';
 import Product_Item_OBJECT from '@salesforce/schema/Product_Item__c';
 import { getPicklistValues } from 'lightning/uiObjectInfoApi';
 import DISTRICT_FIELD from '@salesforce/schema/Sale_Invoice__c.District__c';
+import UoM_FIELD from '@salesforce/schema/Product_Item__c.UoM__c';
 import STATE_FIELD from '@salesforce/schema/Sale_Invoice__c.State__c';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import { getRecord } from 'lightning/uiRecordApi';
@@ -14,23 +15,29 @@ const FIELDS = ['Sale_Invoice__c.Party__r.Name', 'Product_Item__c.Product2.Name'
 
 
 export default class CreateSale extends LightningElement {
+  //Test Comment 12
   FortuneLogoUrl = Logo;
   addIcon=ADDICON;
   DeleteIcon=DELETEICON;
+  UoMValues;
   @track productName;
   @track quantity;
   @track unitPrice;
   @track description;
-  @track lineItems = [];
   @api recordId;
   @track selectedAccount;
-  Unitrate ;
- Quantity;
- Discount;
- Totalprice;
- Discountprice;
+  
+ @track Totalprice=0;
+ @track DiscountPrice=0;
+ get formattedTotal() {
+  return this.Totalprice.toFixed(2);
+}
+get formattedDiscount() {
+  return this.DiscountPrice.toFixed(2);
+}
+ nextId = 1;
   @track rows = [
-    {index: 0, SrNo:1, item: '', description: '',  quantity: '', UoM: '',  rate: '', Discount: '',DiscountPrice: '', Total: ''   }
+    {index: 0, id:this.nextId, SrNo:1, item: '', description: '',  quantity: 0, UoM: '',  rate: 0, Discount: 0 ,DiscountPrice: 0, Total: 0   }
 ];
   selectedState = '';
   selectedDistrict = '';
@@ -73,54 +80,54 @@ export default class CreateSale extends LightningElement {
   }
 
   ratehandler(event) {
-    this.Unitrate = event.target.value;
-    if (this.Quantity !== undefined && this.Discountprice !== undefined && this.Unitrate !== undefined) {
-      this.Totalprice = this.Quantity * this.Unitrate - this.Discountprice;
-      //let discPrice=this.Discount*this.Unitrate*this.Quantity/100;
-     /// let Totlprice=this.Unitrate*this.Quantity-this.Discountprice;
-      ///let val = this.template.querySelector('.ValJS');
-      //val.value=discPrice;
-      //let val1 = this.template.querySelector('.ValJ');
-      //val1.value=Totlprice;
-       let table = this.template.querySelector('table');
-         let rowNumber = table.rows.length-1;
-      this.rows[rowNumber].Totalprice.value = this.Quantity * this.Unitrate - this.Discountprice;
-
-    }
+  
+            const itemId = event.target.dataset.id;
+            console.log(itemId);
+            const row = this.rows.find(row => row.id == itemId);
+            row.rate = event.target.value;
+            if (row.rate === undefined || row.rate === null || row.rate == 0) {
+              row.Total = 0;
+              row.DiscountPrice=0;
+            }
+            else{
+              row.Total = (row.quantity * row.rate -row.DiscountPrice)//.toFixed(2);
+              row.DiscountPrice = (row.quantity * row.rate * row.Discount / 100)//.toFixed(2);
+            }
+           
+            //this.Totalprice=this.Totalprice+row.Total;
+            //this.DiscountPrice=this.DiscountPrice+row.DiscountPrice;
   }
 
   quantityhandler(event) {
-    this.Quantity = event.target.value;
-    if (typeof this.Unitrate !== "undefined" ) {
-        let discPrice = this.Discount * this.Unitrate * this.Quantity / 100;
-        let Totlprice = this.Unitrate * this.Quantity; //- this.Discountprice;
-        this.Totalprice = Totlprice;
-        let table = this.template.querySelector('table');
-        let rowNumber = table.rows.length - 1;
-        console.log(rowNumber);
-        this.rows[rowNumber].Total = Totlprice;
-        console.log(this.rows[rowNumber].Total);
-    }
+  
+           const itemId = event.target.dataset.id;
+            const row = this.rows.find(row => row.id == itemId);
+            row.quantity = event.target.value;
+            row.DiscountPrice = (row.quantity * row.rate * row.Discount / 100)//.toFixed(2);
+            row.Total = (row.quantity * row.rate-row.DiscountPrice)//.toFixed(2);
+           // this.Totalprice=this.Totalprice+row.Total;
+           // this.DiscountPrice=this.DiscountPrice+row.DiscountPrice;
+
 }
-
-
+BlurHandler(){
+  this.Totalprice = this.rows.reduce((acc, curr) => acc + curr.Total, 0);
+  this.DiscountPrice = this.rows.reduce((acc, curr) => acc + curr.DiscountPrice, 0);
+ 
+}
 
 discounthandler(event)
 {
+   
+    const itemId = event.target.dataset.id;
+    const row = this.rows.find(row => row.id == itemId);
+    row.Discount = event.target.value;
+    console.log(row.Discount);
+    row.DiscountPrice = (row.quantity * row.rate * row.Discount / 100)//.toFixed(2);
+    console.log(row.DiscountPrice);
+    row.Total=(row.quantity * row.rate-row.DiscountPrice)//.toFixed(2);
     
-    if(this.Unitrate!="undefined" && this.Quantity!="undefined")
-    {
-       this.Discount=event.target.value;
-       this.Discountprice=this.Discount*this.Unitrate*this.Quantity/100;
-       this.Totalprice=this.Unitrate*this.Quantity-this.Discountprice;
-       let discPrice=this.Discount*this.Unitrate*this.Quantity/100;
-      let Totlprice=this.Unitrate*this.Quantity-this.Discountprice;
-      let table = this.template.querySelector('table');
-         let rowNumber = table.rows.length-1;
-      this.rows[rowNumber].Totalprice.value = this.Quantity * this.Unitrate - this.Discountprice;
-
-
-    }
+    //this.Totalprice=this.Totalprice+row.Total;
+          //  this.DiscountPrice=this.DiscountPrice+row.DiscountPrice;
 }
 
 
@@ -143,6 +150,7 @@ discounthandler(event)
         }
     )
     DistrictValues;
+  
 
     @wire(getPicklistValues,
         {
@@ -151,35 +159,34 @@ discounthandler(event)
         }
     )
     StateValues;
-    
 
-/*
-  handleProductNameChange(event) {
-    this.productName = event.target.value;
+    @wire(getObjectInfo, { objectApiName: Product_Item_OBJECT })
+    ProductItemInfo;
+
+    @wire(getPicklistValues, { recordTypeId: '$ProductItemInfo.data.defaultRecordTypeId', fieldApiName: UoM_FIELD })
+uomPicklistValues({ error, data }) {
+  if (data) {
+    this.UoMValues = data.values.map((option) => {
+      return {
+        label: option.label,
+        value: option.value,
+      };
+    });
+  } else if (error) {
+    console.error('Error retrieving UoM picklist values:', error);
   }
-
-  handleQuantityChange(event) {
-    this.quantity = event.target.value;
-  }
-
-  handleUnitPriceChange(event) {
-    this.unitPrice = event.target.value;
-  }
-
-  handleDescriptionChange(event) {
-    this.description = event.target.value;
-  }*/
+}
 
   handleAddLineItem() {
     let table = this.template.querySelector('table');
-    this.Totalprice=0;
+    
     this.Quantity=0;
     this.Unitrate=0;
      this.Discount=0;
-    this.Discountprice=0;
+    
     let rowNumber = table.rows.length;
-
-    this.rows.push({ SrNo:rowNumber, item: '', description: '',  quantity: '', UoM: '',  rate: '', Discount: '',DiscountPrice: '', Total: '' });
-   
+    this.nextId++;
+    this.rows.push({ SrNo:rowNumber, id:this.nextId,item: '', description: '',  quantity: 0, UoM: '',  rate: 0, Discount: 0,DiscountPrice: 0, Total: 0 });
+    
   } 
 }

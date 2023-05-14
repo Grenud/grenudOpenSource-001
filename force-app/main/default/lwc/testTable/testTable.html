@@ -1,0 +1,27 @@
+<template>
+    <table>
+        <thead>
+            <tr>
+                <th>Quantity</th>
+                <th>Rate</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <template for:each={items} for:item="item">
+                <tr key={item.id}>
+                    <td>
+                        <lightning-input type="number" value={item.quantity} onchange={handleQuantityChange} data-id={item.id}></lightning-input>
+                    </td>
+                    <td>
+                        <lightning-input type="number" value={item.rate} onchange={handleRateChange} data-id={item.id}></lightning-input>
+                    </td>
+                    <td>
+                        {item.total}
+                    </td>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+    <lightning-button label="Add New Item" onclick={handleAddItem}></lightning-button>
+</template>

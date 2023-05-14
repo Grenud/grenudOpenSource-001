@@ -154,8 +154,8 @@
 			</tr>
 		</thead>
 		<tbody>
-      <template for:each={rows} for:item="row" for:index="index">
-			<tr key={row.index} >
+      <template for:each={rows} for:item="row" >
+			<tr key={row.id} >
         <td style="width: 3%;">
             <img src={DeleteIcon} alt="add" width="20" height="20">
          
@@ -172,31 +172,33 @@
                 </td>
 				<td style="width: 25%;"> <lightning-input type="text" variant="standard"  ></lightning-input></td>
 				<td>
-                   <lightning-input type="decimal" variant="standard" onblur={quantityhandler} ></lightning-input> 
+                   <lightning-input type="decimal" variant="standard" value={row.quantity} onchange={quantityhandler} onblur={BlurHandler} data-id={row.id} ></lightning-input> 
                 </td>
                 <td>
-                   <lightning-input type="text" variant="standard" name="UoM"  ></lightning-input> 
+                  <lightning-combobox options={UoMValues} value={value} ></lightning-combobox> 
                 </td>
                   <td>
-                    <lightning-input type="decimal" variant="standard" name="Rate" onblur= {ratehandler} ></lightning-input> 
+                    <lightning-input type="decimal" variant="standard" name="Rate" value={row.rate} onchange= {ratehandler} onblur={BlurHandler} data-id={row.id}></lightning-input> 
                  </td>
                  <td>
-                  <lightning-input type="decimal" variant="standard" name="discount" onblur={discounthandler} ></lightning-input> 
+                  <lightning-input type="decimal" variant="standard" name="discount" value={row.Discount} onchange={discounthandler} onblur={BlurHandler} data-id={row.id}></lightning-input> 
                </td>
                 <td>
-                   <lightning-input class="ValJS" type="decimal" variant="standard" name="DiscountPrice" value={Discountprice} ></lightning-input> 
+                   <lightning-input class="ValJS" type="decimal" variant="standard" value={row.DiscountPrice} name="DiscountPrice"  data-id={row.id} read-only></lightning-input> 
                 </td>
                 
 				        <td>
-                  <lightning-input class="ValJ" type="decimal" variant="standard"  name="Total"  ></lightning-input> 
+                  <lightning-input class="ValJ" type="decimal" variant="standard" value={row.Total}  name="Total"  data-id={row.id} read-only></lightning-input> 
                 </td>
 			</tr>
     </template>
 		</tbody>
 	</table>
 	<div class="invoice-total">
+    <p><Strong>Total Discount:</Strong></p>
+		<p>{formattedDiscount}</p>
 		<p><Strong>Total:</Strong></p>
-		<p>$159.97</p>
+		<p>{formattedTotal}</p>
 	</div>
 
 
