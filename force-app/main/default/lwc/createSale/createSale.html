@@ -4,9 +4,9 @@
 		<img src={FortuneLogoUrl} alt="Logo">
 	</div>
 
-  <lightning-combobox label="State" options={StateOptions} value={selectedState} onchange={handleStateChange}></lightning-combobox>
+ <!-- <lightning-combobox label="State" options={StateOptions} value={selectedState} onchange={handleStateChange}></lightning-combobox>
   <lightning-combobox label="District" options={DistrictOptions} value={selectedDistrict} disabled={isDistrictDisabled}></lightning-combobox>
-
+-->
 
 
 <div class="slds-grid slds-wrap">
@@ -31,7 +31,7 @@
  <div class="slds-col slds-size_6-of-12 ">
  <span>
   <div class="slds-m-around_x-small">
-  <lightning-input type="text" variant="standard" name="Invoice Number" label="Invoice Number" ></lightning-input>
+  <lightning-input type="text" variant="standard" name="Invoice Number" label="Invoice Number" required  onchange={InvChnageHandler}></lightning-input>
   </div>
   </span>
  </div>
@@ -39,7 +39,7 @@
  <span>
   <div class="slds-m-around_x-small">
     <lightning-record-edit-form object-api-name="Sale_Invoice__c" id="createContacForm" >
-        <lightning-input-field field-name="Contact_Person__c" aria-label="Contact Person" onfocus={HandleFocus} required> </lightning-input-field>
+        <lightning-input-field field-name="Contact_Person__c" aria-label="Contact Person" onfocus={HandleFocus} required onchange={ContacChangetHandler}> </lightning-input-field>
     </lightning-record-edit-form>
   </div>
   </span>
@@ -47,42 +47,42 @@
  <div class="slds-col slds-size_6-of-12">
  <span>
   <div class="slds-m-around_x-small">
-  <lightning-input type="date" variant="standard" name="Invoice Date" label="Invoice Date" ></lightning-input>
+  <lightning-input type="date" variant="standard" name="Invoice Date" label="Invoice Date" onchange={InvDateHandler} required></lightning-input>
   </div>
   </span>
  </div>
  <div class="slds-col slds-size_4-of-12">
  <span>
   <div class="slds-m-around_x-small">
-  <lightning-input type="text" variant="standard" name="Phone" label="Phone" ></lightning-input>
+  <lightning-input type="text" variant="standard" name="Phone" label="Phone" onchange={PhoneChangeHandler}></lightning-input>
   </div>
   </span>
  </div>
  <div class="slds-col slds-size_4-of-12">
  <span>
   <div class="slds-m-around_x-small">
-  <lightning-input type="text" variant="standard" name="Email" label="Email" ></lightning-input>
+  <lightning-input type="text" variant="standard" name="Email" label="Email" onchange={EmailChangeHandler} ></lightning-input>
   </div>
   </span>
  </div>
  <div class="slds-col slds-size_4-of-12">
  <span>
   <div class="slds-m-around_x-small">
-  <lightning-input type="text" variant="standard" name="Village" label="Village" ></lightning-input>
+  <lightning-input type="text" variant="standard" name="Village" label="Village" onchange={VillageHandler}></lightning-input>
   </div>
   </span>
  </div>
  <div class="slds-col slds-size_3-of-12">
  <span>
   <div class="slds-m-around_x-small">
-  <lightning-input type="text" variant="standard" name="Block" label="Block" ></lightning-input>
+  <lightning-input type="text" variant="standard" name="Block" label="Block" onchange={BlockHandler}></lightning-input>
   </div>
   </span>
  </div>
  <div class="slds-col slds-size_3-of-12">
  <span>
   <div class="slds-m-around_x-small">
-  <lightning-input type="text" variant="standard" name="Tehsil" label="Tehsil" ></lightning-input>
+  <lightning-input type="text" variant="standard" name="Tehsil" label="Tehsil" onchange={taisilHanlder} ></lightning-input>
   </div>
   </span>
  </div>
@@ -92,13 +92,12 @@
       
            <!-- <lightning-combobox name="District" label="District" value={value}
                 options={DistrictValues.data.values} onchange={handleChange}>
-            </lightning-combobox>    --> 
-            
-                <template if:true={DistrictValues.data}>
-                    <lightning-combobox name="District" label="District" value={value}
-                        options={DistrictValues.data.values} onchange={handleChange}>
-                    </lightning-combobox>
-                </template>
+            </lightning-combobox>    -->  
+        <template if:true={StateValues.data}>
+          <lightning-combobox name="State" label="State" value={value}
+              options={StateValues.data.values} onchange={handleInvoiceBlur}>
+          </lightning-combobox>
+      </template>
             
     </div>
   </span>
@@ -107,37 +106,13 @@
          <span>
           <div class="slds-m-around_x-small">
            
-                <template if:true={StateValues.data}>
-                    <lightning-combobox name="State" label="State" value={value}
-                        options={StateValues.data.values} onchange={handleChange}>
-                    </lightning-combobox>
-                </template>
-         
-    
+            <lightning-combobox name="District" label="District" value={value}
+            options={filertoption} onchange={DistrictHandler}>
+        </lightning-combobox>  
           </div>
          </span>
         </div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-	
+</div>	
 	<table class="slds-m-top_small invoice-items">
 		<thead>
 			<tr>
@@ -157,11 +132,11 @@
       <template for:each={rows} for:item="row" >
 			<tr key={row.id} >
         <td style="width: 3%;">
-            <img src={DeleteIcon} alt="add" width="20" height="20">
+          <lightning-button data-id={row.id} onclick={DeleteHandler}> <img src={DeleteIcon} alt="delete" width="20" height="20"></lightning-button>
          
         </td>
         <td style="width: 5%;">
-                    <lightning-input type="number" value={row.SrNo} variant="standard"  ></lightning-input>
+                    <lightning-input type="number" value={row.SrNo} variant="standard" read-only ></lightning-input>
                 
          </td>
               
@@ -201,39 +176,10 @@
 		<p>{formattedTotal}</p>
 	</div>
 
-
-
-
-
-
-
-
-
-
-
-  
-
         <lightning-button label="Click here to add more item" variant="brand" onclick={handleAddLineItem}></lightning-button>
    
   <lightning-card >
-    <template for:each={lineItems} for:item="lineItem">
-      <div key={lineItem.id} class="slds-p-around_medium">
-        <div class="slds-grid slds-wrap">
-          <div class="slds-col slds-size_1-of-2">
-            <lightning-output-field label="Product Name" value={lineItem.productName}></lightning-output-field>
-          </div>
-          <div class="slds-col slds-size_1-of-4">
-            <lightning-output-field label="Quantity" value={lineItem.quantity}></lightning-output-field>
-          </div>
-          <div class="slds-col slds-size_1-of-4">
-            <lightning-output-field label="Unit Price" value={lineItem.unitPrice}></lightning-output-field>
-          </div>
-          <div class="slds-col slds-size_1-of-2">
-            <lightning-output-field label="Description" value={lineItem.description}></lightning-output-field>
-          </div>
-        </div>
-      </div>
-    </template>
+   
     <div class="slds-align_absolute-center" >
         <div class="slds-m-left_x-small">
     <lightning-button variant="brand" label="Submit" title="Submit" onclick={handleSubmit}></lightning-button>
