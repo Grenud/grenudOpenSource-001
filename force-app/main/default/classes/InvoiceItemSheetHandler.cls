@@ -3,32 +3,35 @@ public class InvoiceItemSheetHandler
   public static void HandlerAfterInsert(list<Invoice_Item_Sheet__c>InvoiceItemSheetList)
   {
       list<Sale_Invoice__c>NewSaleInvToInsert= new list<Sale_Invoice__c>();
-       list<Product_Item__c>ItemtoInsertList=new list<Product_Item__c>();
-     set<string>InvoiceNoSet=new set<string>();
-     map<string, string>InvoiceNameIdMap=new map<string, string>();
-     for(Invoice_Item_Sheet__c ObjInv:InvoiceItemSheetList)
-     {
+      list<Product_Item__c>ItemtoInsertList=new list<Product_Item__c>();
+      set<string>InvoiceNoSet=new set<string>();
+      map<string, string>InvoiceNameIdMap=new map<string, string>();
+      for(Invoice_Item_Sheet__c ObjInv:InvoiceItemSheetList)
+      {
          if(ObjInv.Invoice_Number__c!=null)
          {
              InvoiceNoSet.add(ObjInv.Invoice_Number__c);
          }         
-     }
-     list<Sale_Invoice__c>InvoiceList=[select id,name from Sale_Invoice__c where name IN : InvoiceNoSet];  
-     if(InvoiceList.size()>0){
+      }
+      list<Sale_Invoice__c>InvoiceList=[select id,name from Sale_Invoice__c where name IN : InvoiceNoSet];  
+      if(InvoiceList.size()>0)
+      {
           for(Sale_Invoice__c ObjInv:InvoiceList )
           {
               InvoiceNameIdMap.put(ObjInv.Name,ObjInv.Id);
           }
-     }
-    for(Invoice_Item_Sheet__c ObjInv:InvoiceItemSheetList)
-    {
-        if(InvoiceNameIdMap.get(ObjInv.Invoice_Number__c)==null ||InvoiceNameIdMap.get(ObjInv.Invoice_Number__c)==''){
+      }
+      for(Invoice_Item_Sheet__c ObjInv:InvoiceItemSheetList)
+      {
+        if(InvoiceNameIdMap.get(ObjInv.Invoice_Number__c)==null ||InvoiceNameIdMap.get(ObjInv.Invoice_Number__c)=='')
+        {
             Sale_Invoice__c NewInvoice= New Sale_Invoice__c();
             NewInvoice.name=ObjInv.Invoice_Number__c;
             NewInvoice.Vyapar_INV_No__c=ObjInv.Invoice_Number__c;
+            NewInvoice.Party_Name__c=ObjInv.Party_Name__c;
             NewSaleInvToInsert.add(NewInvoice);
         }     
-        }
+      }
       system.debug('NewSaleInvToInsert@@@'+NewSaleInvToInsert.size());
       insert NewSaleInvToInsert;
       if(NewSaleInvToInsert.size()>0){
