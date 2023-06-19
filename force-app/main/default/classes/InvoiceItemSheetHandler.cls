@@ -29,6 +29,7 @@ public class InvoiceItemSheetHandler
             NewInvoice.name=ObjInv.Invoice_Number__c;
             NewInvoice.Vyapar_INV_No__c=ObjInv.Invoice_Number__c;
             NewInvoice.Party_Name__c=ObjInv.Party_Name__c;
+            NewInvoice.Total_Invoice_Value__c=ObjInv.Amount__c;
             NewSaleInvToInsert.add(NewInvoice);
         }     
       }

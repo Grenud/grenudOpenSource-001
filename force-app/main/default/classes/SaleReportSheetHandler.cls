@@ -14,7 +14,7 @@ public class SaleReportSheetHandler
           }
       }
       list<Sale_Invoice__c>ExistingInvoice=[SELECT Id, Transaction_Type__c, Date__c, Order_No__c, Name, Phone__c, Party_Name__c, Payment_Type__c, Description__c,
-                                            Adhaar_Card_No__c, Father_Name__c, Kit_Area_Plots__c FROM Sale_Invoice__c];
+                                            Adhaar_Card_No__c, Father_Name__c, Kit_Area_Plots__c FROM Sale_Invoice__c where name in :SRinvNum];
       for(Sale_Invoice__c objinv:ExistingInvoice) 
       {
           if(objinv.Name!=null)
@@ -46,6 +46,7 @@ public class SaleReportSheetHandler
               Sale_Invoice__c SI=new Sale_Invoice__c();
               SI.Transaction_Type__c=objSR.Transaction_Type__c;
               SI.Name=objSR.Invoice_no__c;
+              SI.Total_Invoice_Value__c=objSR.Total_Amount__c;
               SI.Date__c=objSR.Date__c;
               SI.Order_No__c=objSR.Order_No__c;
               SI.Phone__c=objSR.Party_Phone_No__c;
@@ -64,9 +65,7 @@ public class SaleReportSheetHandler
           upsert SaleInvoiceToUpsertList;
       }
  }
-}
-
-
+}                     
 
 
 
